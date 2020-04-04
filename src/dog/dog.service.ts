@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Dog } from './interface/dog.interface';
 import { CreateDogDto } from './dto/create-dog.dto';
@@ -18,21 +18,46 @@ export class DogService {
     }
 
     async getDogs(): Promise<Dog[]>{
-        return await this.dogModel.find().exec();
+        const exist = await this.dogModel.find().exec();
+        if (!exist){
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+        }
+
+        return exist;
     }
 
-    async getDog(id): Promise<Dog>{
-        return await this.dogModel.findOne({_id: id});
+    async getDog(id: string): Promise<Dog>{
+        const exist = await this.dogModel.findOne({_id: id});
+        // check if exists
+        if (!exist){
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+        }
+
+        return exist;
     }
 
     async updateDog(_id: string, createDogDto: Partial<CreateDogDto>): Promise<Dog> {
+        const exist = await this.dogModel.findOne({_id})
+
+        if (!exist){
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+        }
+         
         await this.dogModel.updateOne({ _id }, createDogDto );
-        return await this.dogModel.findOne( { _id});
+
+        return exist;
     }
 
-    async deleteDog(_id: string): Promise<{deleted: boolean}> {
+    async deleteDog(_id: string): Promise<Dog> {
+
+        const exist = await this.dogModel.findOne({_id})
+
+        if (!exist){
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+        }
         await this.dogModel.deleteOne({ _id});
-        return { deleted: true };
+
+        return exist;
     }
 
  }
