@@ -1,3 +1,4 @@
+import { APP_FILTER } from '@nestjs/core';
 import { Module, HttpModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -5,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { DogModule } from './dog/dog.module';
 import { CatModule } from './cat/cat.module';
+import { HttpErrorFilter } from './shared/http-error.filter';
 
 @Module({
   imports: [
@@ -15,6 +17,9 @@ import { CatModule } from './cat/cat.module';
         {useNewUrlParser: true})
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {
+    provide: APP_FILTER,
+    useClass: HttpErrorFilter,
+  }],
 })
 export class AppModule {}
