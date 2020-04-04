@@ -25,4 +25,14 @@ export class DogService {
         return await this.dogModel.findOne({_id: id});
     }
 
+    async updateDog(_id: string, createDogDto: Partial<CreateDogDto>): Promise<Dog> {
+        await this.dogModel.updateOne({ _id }, createDogDto );
+        return await this.dogModel.findOne( { _id});
+    }
+
+    async deleteDog(_id: string): Promise<{deleted: boolean}> {
+        await this.dogModel.deleteOne({ _id});
+        return { deleted: true };
+    }
+
  }
