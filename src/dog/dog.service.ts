@@ -32,19 +32,18 @@ export class DogService {
         if (!exist){
             throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
-
         return exist;
     }
 
     async updateDog(_id: string, createDogDto: Partial<CreateDogDto>): Promise<Dog> {
-        const exist = await this.dogModel.findOne({_id})
+        let exist = await this.dogModel.findOne({_id})
 
         if (!exist){
             throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
          
         await this.dogModel.updateOne({ _id }, createDogDto );
-
+        exist = await this.dogModel.findOne({_id});
         return exist;
     }
 

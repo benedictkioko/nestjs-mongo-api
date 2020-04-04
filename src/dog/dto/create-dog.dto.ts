@@ -1,5 +1,12 @@
+import { IsString } from "class-validator";
+
 export class CreateDogDto {
-    readonly name: string;
-    readonly breed: string;
-    readonly owner: string;
+    @IsString()
+    name: string;
+
+    @IsString()
+    breed: string;
+
+    @IsString()
+    owner: string;
   }
